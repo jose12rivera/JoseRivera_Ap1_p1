@@ -1,10 +1,16 @@
 using JoseRivera_Ap1_p1.Components;
+using JoseRivera_Ap1_p1.DAL;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+//La Inyectar el contexto
+var ConStr = builder.Configuration.GetConnectionString("ConStr");
+builder.Services.AddDbContext<Contexto>(o => o.UseSqlite(ConStr));
 
 var app = builder.Build();
 
