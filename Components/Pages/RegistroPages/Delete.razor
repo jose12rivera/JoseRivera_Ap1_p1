@@ -1,0 +1,25 @@
+﻿@page "/Prestamo/Edit"
+@page "/Prestamo/Edit/{PrestamoId:int}"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject PrestamosServices prestamosServices
+
+@code {
+    [Parameter]
+    public int PrestamoId { get; set; }
+    public Prestamos? prestamo { get; set; } = new Prestamos();
+    private bool existe = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (PrestamoId != 0)
+        {
+            prestamo = await prestamosServices.Buscar(PrestamoId);
+        }
+    }
+    public 
+    public async Task Volver()
+    {
+        navigationManager.NavigateTo("");
+    }
+}
