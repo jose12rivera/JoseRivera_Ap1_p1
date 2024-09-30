@@ -1,15 +1,66 @@
-﻿@page "/Prestamo/Edit"
-@page "/Prestamo/Edit/{PrestamoId:int}"
+﻿@page "/Prestamo/Delete"
+@page "/Prestamo/Delete/{PrestamoId:int}"
 @rendermode InteractiveServer
 @inject NavigationManager navigationManager
 @inject PrestamosServices prestamosServices
+
+@if(prestamo != null)
+{
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-header ">Registro Eliminar Prestamo</h5>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>PrestamoId:</strong>@prestamo.PrestamoId</li>
+                                <li><strong>Deudor:</strong>@prestamo.Deudor</li>
+                                <li><strong>Concepto:</strong>@prestamo.Concepto</li>
+                                <li><strong>Monto:</strong>@prestamo.Monto</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <button type="button" @onclick="EliminarPrestamo" class="btn btn-primary">
+                <span class="bi bi-trash mt-3"></span>
+               Eliminar
+            </button>
+            <button type="button" @onclick="Volver" class="btn btn-primary">
+                <span class="bi bi-arrow-left mt-3"></span>
+                Volver
+            </button>
+        </div>
+
+       
+    </div>
+
+    @if (Alerta)
+    {
+
+        <div class="alert alert-danger" role="alert">
+            se elimino el prestamos.
+        </div>
+    }
+}
+else
+{
+    <p>No encontrado.</p>
+}
+
 
 @code {
     [Parameter]
     public int PrestamoId { get; set; }
     public Prestamos? prestamo { get; set; } = new Prestamos();
     private bool existe = false;
-
+    private bool Alerta;
     protected override async Task OnInitializedAsync()
     {
         if (PrestamoId != 0)
@@ -17,7 +68,17 @@
             prestamo = await prestamosServices.Buscar(PrestamoId);
         }
     }
-    public 
+    public  async Task EliminarPrestamo()
+    {
+        if(PrestamoId ==0 || prestamo == null)
+        {
+            return;
+        }
+        if(await prestamosServices.Eliminar(PrestamoId))
+        {
+            Alerta = true;
+        }
+    }
     public async Task Volver()
     {
         navigationManager.NavigateTo("");
