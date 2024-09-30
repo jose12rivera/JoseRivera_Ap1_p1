@@ -8,7 +8,7 @@ public class Prestamos
     [Required(ErrorMessage = "Intentar Nuevamente el Deudor")]
     public string? Deudor { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el concepto")]
-    public decimal? Concepto  { get; set; }
+    public string? Concepto  { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el Monto")]
     public decimal? Monto { get; set; }
 }
