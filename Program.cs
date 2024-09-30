@@ -1,5 +1,6 @@
 using JoseRivera_Ap1_p1.Components;
 using JoseRivera_Ap1_p1.DAL;
+using JoseRivera_Ap1_p1.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddRazorComponents()
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContext<Contexto>(o => o.UseSqlite(ConStr));
 
+//La inyeccion del services
+builder.Services.AddScoped<PrestamosServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
