@@ -1,5 +1,106 @@
-﻿<h3>Create</h3>
+﻿@page "/Prestamo/Create"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject PrestamosServices prestamosServices
 
+<EditForm Model="prestamo" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator/>
+
+    <div class="card-header text-center">
+        <h5 class="card-header ">Registro Prestamos</h5>
+    </div>
+
+    <div class="card-body">
+       @*  PrestamoId *@
+        <div class="row">
+            <div class="col-md-10 mb-5">
+                <label for="PrestamoId" class="form-label"><strong>PrestamoId:</strong></label>
+                <div class="input-group">
+                    <div style="width: 40%; height: 1mm;">
+                        <InputNumber @bind-Value="prestamo.PrestamoId" class="form-control" style="font-size: 0.8rem;" aria-describedby="botonbuscar"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Deudor *@
+        <div class="mb-5">
+            <label for="Deudor" class="form-label"><strong>Deudor:</strong></label>
+            <InputText @bind-Value="prestamo.Deudor" class="form-control"/>
+            <ValidationMessage For="@(() => prestamo.Deudor)"/>
+        </div>
+        @*Concepto *@
+        <div class="mb-5">
+            <label for="Concepto" class="form-label"><strong>Concepto:</strong></label>
+            <InputText @bind-Value="prestamo.Concepto" class="form-control" />
+            <ValidationMessage For="@(() => prestamo.Concepto)" />
+        </div>
+        @* Monto *@
+        <div class="mb-5">
+            <label for="Monto" class="form-label"><strong>Monto:</strong></label>
+            <InputNumber @bind-Value="prestamo.Monto" class="form-control" />
+            <ValidationMessage For="@(() => prestamo.Monto)" />
+        </div>
+
+        <div class="card-footer aligh; justify-content-center">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">
+                    <span class="bi bi-floppy mt-3"></span>
+                    Guardar
+                </button>
+                <button type="button" @onclick="Volver" class="btn btn-primary">
+                    <span class="bi bi-arrow-left mt-3"></span>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
 @code {
+    [Parameter]
+    public int PrestamoId{ get; set; }
+    public Prestamos? prestamo { get; set; } = new Prestamos();
+    private bool existe = false;
 
+    public async Task Nuevo()
+    {
+        prestamo = new Prestamos();
+        existe = false;
+    }
+    public async Task Buscar()
+    {
+        existe = false;
+        var encontrado = await prestamosServices.Buscar(prestamo.PrestamoId);
+        if(encontrado != null)
+        {
+            prestamo = encontrado;
+        }
+        else
+        {
+            Nuevo();
+        }
+    }
+    public async Task<bool> Validar()
+    {
+        existe = await prestamosServices.Existe(prestamo.PrestamoId);
+        return !existe;
+    }
+
+    public async Task Guardar()
+    {
+        if(!await Validar())
+        {
+            return;
+        }
+        var guadado = await prestamosServices.Guardar(prestamo);
+        if (guadado)
+        {
+            Nuevo();
+        }
+    }
+
+    public async Task Volver()
+    {
+        navigationManager.NavigateTo("");
+    }
 }
