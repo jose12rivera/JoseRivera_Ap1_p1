@@ -1,34 +1,77 @@
-﻿@page "/Registro/Index"
+﻿@page "/Prestamo/Index"
 @rendermode InteractiveServer
 @inject NavigationManager navigationManager
-
+@inject PrestamosServices prestamosServices
 
 <PageTitle></PageTitle>
 <div class="container">
     <div class="card shadow-lg">
-        <div class="card-header">
-            <h5 class="card-header ">Registro</h5>
+        <div class="card-header text-center">
+            <h5 class="card-header ">Registro Prestamos</h5>
         </div>
 
         <div class="card-body">
             <div class="col-md-15 text-end">
-                <a href="/Prioridad/Create" class="btn btn-success" type="button">
+
+                <div class="row md-3 align-content-center">
+                    <div class="col-md-3">
+                        <label for="filtro" class="form-label">Filtrar Por:</label>
+                        <select @bind="filtro" class="form-control">
+                            <option value="id">PrestamoId</option>
+                            <option value="Deudor">Deudor</option>
+                            <option value="Concepto">Concepto</option>
+                            <option value="Monto">Monto</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label for="valorfiltro" class="form-label">Busqueda:</label>
+                        <div class="input-group">
+                            <input @bind="valorfiltro" class="form-control"/>
+                            <button @onclick="Buscar" class="btn btn-primary" type="button">
+
+                                <span class="bi bi-search-circle mt-3"></span> Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <a href="/Prestamo/Create" class="btn btn-primary" type="button">
 
                     <span class="bi bi-plus-square-fill mt-3"></span> Crear
                 </a>
 
                 <table class="table table-light table-bordered">
-                    <thead class="table table-striped text-center text-white bg-primary">
+                    <thead class="table table-striped text-center ">
                         <tr>
-                            <th>Id</th>
-                            <th>Nombre</th>
+                            <th>PrestamoId</th>
+                            <th>Deudor</th>
+                            <th>Concepto</th>
+                            <th>Monto</th>
                             <th>Ver</th>
                             <th>Editar</th>
                             <th>Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach(var p in ListaPrestamos)
+                        {
+                            <tr>
+                                <td>@p.PrestamoId</td>
+                                <td>@p.Deudor</td>
+                                <td>@p.Concepto</td>
+                                <td>@p.Monto</td>
 
+                                <td class="text-center">
+                                    <a href="/@p.PrestamoId" class="btn bi bi-eye"></a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/Prestamo/Edit/@p.PrestamoId" class="btn bi bi-pencil-square"></a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/@p.PrestamoId" class="btn bi bi-trash"></a>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -37,6 +80,41 @@
     </div>
 </div>
 
-@code {
+<div class="card-footer">
+    <p>Toatal:@ListaPrestamos.Count</p>
+</div>
 
+@code {
+    public List<Prestamos> ListaPrestamos { get; set; } = new List<Prestamos>();
+    public string filtro = "id";
+    public string valorfiltro = "";
+    protected override async Task OnInitializedAsync()
+    {
+        ListaPrestamos = await prestamosServices.Listar(p => true);
+    }
+
+    public async Task Buscar()
+    {
+        if (string.IsNullOrWhiteSpace(valorfiltro))
+        {
+            ListaPrestamos = await prestamosServices.Listar(p => true);
+        }
+        else
+        {
+            if(filtro=="id"&&int.TryParse(valorfiltro, out int PrestamoId)){
+                ListaPrestamos = await prestamosServices.Listar(p => p.PrestamoId==PrestamoId);
+            }else if (filtro == "Deudor")
+            {
+                ListaPrestamos = await prestamosServices.Listar(p => p.Deudor.Contains(valorfiltro));
+            }
+            else if (filtro == "Concepto")
+            {
+                ListaPrestamos = await prestamosServices.Listar(p => p.Concepto.Contains(valorfiltro));
+            }
+            else if (filtro == "Monto"&&decimal.TryParse(valorfiltro, out decimal Monto))
+            {
+                ListaPrestamos = await prestamosServices.Listar(p => p.Monto==Monto);
+            }
+        }
+    }
 }
