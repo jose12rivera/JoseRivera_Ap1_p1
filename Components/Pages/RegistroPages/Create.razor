@@ -5,7 +5,13 @@
 
 <EditForm Model="prestamo" OnValidSubmit="Guardar">
     <DataAnnotationsValidator/>
+    @if (Alerta)
+    {
 
+        <div class="alert alert-success" role="alert">
+            se guardo el prestamos.
+        </div>
+    }
     <div class="card-header text-center">
         <h5 class="card-header ">Registro Prestamos</h5>
     </div>
@@ -61,7 +67,7 @@
     public int PrestamoId{ get; set; }
     public Prestamos? prestamo { get; set; } = new Prestamos();
     private bool existe = false;
-
+    private bool Alerta;
     public async Task Nuevo()
     {
         prestamo = new Prestamos();
@@ -95,7 +101,7 @@
         var guadado = await prestamosServices.Guardar(prestamo);
         if (guadado)
         {
-            Nuevo();
+            Alerta = true;
         }
     }
 
