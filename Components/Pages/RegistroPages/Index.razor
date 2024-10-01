@@ -19,7 +19,7 @@
                         <select @bind="filtro" class="form-control">
                             <option value="id">PrestamoId</option>
                             <option value="Deudor">Deudor</option>
-                            <option value="Concepto">Concepto</option>
+                            <option value="Concepto ">Concepto </option>
                             <option value="Monto">Monto</option>
                         </select>
                     </div>
@@ -65,10 +65,10 @@
                                     <a href="/@p.PrestamoId" class="btn bi bi-eye"></a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="/Prestamo/Edit/@p.PrestamoId" class="btn bi bi-pencil-square"></a>
+                                    <a href="/Prestamos/Edit/@p.PrestamoId" class="btn bi bi-pencil-square"></a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="/Prestamo/Delete/@p.PrestamoId" class="btn bi bi-trash"></a>
+                                    <a href="/Prestamos/Delete/@p.PrestamoId" class="btn bi bi-trash"></a>
                                 </td>
                             </tr>
                         }
@@ -107,7 +107,7 @@
             {
                 ListaPrestamos = await prestamosServices.Listar(p => p.Deudor.Contains(valorfiltro));
             }
-            else if (filtro == "Concepto")
+            else if (filtro == "Concepto ")
             {
                 ListaPrestamos = await prestamosServices.Listar(p => p.Concepto.Contains(valorfiltro));
             }
