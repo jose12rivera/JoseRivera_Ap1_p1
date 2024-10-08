@@ -13,12 +13,11 @@
         <div class="card-body">
             <div class="col-md-15 text-end">
 
-                <div class="row md-3 align-content-center">
+                <div class="row md-3 align-content-center ">
                     <div class="col-md-3">
                         <label for="filtro" class="form-label">Filtrar Por:</label>
                         <select @bind="filtro" class="form-control">
                             <option value="id">PrestamoId</option>
-                            <option value="Deudor">Deudor</option>
                             <option value="Concepto ">Concepto </option>
                             <option value="Monto">Monto</option>
                         </select>
@@ -28,14 +27,15 @@
                         <label for="valorfiltro" class="form-label">Busqueda:</label>
                         <div class="input-group">
                             <input @bind="valorfiltro" class="form-control"/>
-                            <button @onclick="Buscar" class="btn btn-primary" type="button">
+                            <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
 
                                 <span class="bi bi-search-circle mt-3"></span> Buscar
                             </button>
                         </div>
                     </div>
                 </div>
-                <a href="/Prestamo/Create" class="btn btn-primary" type="button">
+
+                <a href="/Prestamo/Create" class="btn btn-outline-success" type="button">
 
                     <span class="bi bi-plus-square-fill mt-3"></span> Crear
                 </a>
@@ -47,6 +47,7 @@
                             <th>Deudor</th>
                             <th>Concepto</th>
                             <th>Monto</th>
+                            <th>Balance</th>
                             <th>Ver</th>
                             <th>Editar</th>
                             <th>Eliminar</th>
@@ -56,19 +57,20 @@
                         @foreach(var p in ListaPrestamos)
                         {
                             <tr>
-                                <td>@p.PrestamoId</td>
-                                <td>@p.Deudor</td>
-                                <td>@p.Concepto</td>
-                                <td>@p.Monto</td>
+                                <td class="text-center">@p.PrestamoId</td>
+                                <td class="text-center">@p.Deudor?.Nombres</td>
+                                <td class="text-center">@p.Concepto</td>
+                                <td class="text-center">@p.Monto</td>
+                                <td class="text-center">@p.Balance</td>
 
                                 <td class="text-center">
-                                    <a href="/@p.PrestamoId" class="btn bi bi-eye"></a>
+                                    <a href="/Prestamos/Details/@p.PrestamoId" class="btn btn-outline-primary bi bi-eye"></a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="/Prestamos/Edit/@p.PrestamoId" class="btn bi bi-pencil-square"></a>
+                                    <a href="/Prestamos/Edit/@p.PrestamoId" class="btn btn-outline-success bi bi-pencil-square"></a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="/Prestamos/Delete/@p.PrestamoId" class="btn bi bi-trash"></a>
+                                    <a href="/Prestamos/Delete/@p.PrestamoId" class="btn btn-outline-danger bi bi-trash"></a>
                                 </td>
                             </tr>
                         }
@@ -101,19 +103,17 @@
         }
         else
         {
-            if(filtro=="id"&&int.TryParse(valorfiltro, out int PrestamoId)){
-                ListaPrestamos = await prestamosServices.Listar(p => p.PrestamoId==PrestamoId);
-            }else if (filtro == "Deudor")
+            if (filtro == "id" && int.TryParse(valorfiltro, out int PrestamoId))
             {
-                ListaPrestamos = await prestamosServices.Listar(p => p.Deudor.Contains(valorfiltro));
+                ListaPrestamos = await prestamosServices.Listar(p => p.PrestamoId == PrestamoId);
             }
             else if (filtro == "Concepto ")
             {
                 ListaPrestamos = await prestamosServices.Listar(p => p.Concepto.Contains(valorfiltro));
             }
-            else if (filtro == "Monto"&&decimal.TryParse(valorfiltro, out decimal Monto))
+            else if (filtro == "Monto" && decimal.TryParse(valorfiltro, out decimal Monto))
             {
-                ListaPrestamos = await prestamosServices.Listar(p => p.Monto==Monto);
+                ListaPrestamos = await prestamosServices.Listar(p => p.Monto == Monto);
             }
         }
     }
