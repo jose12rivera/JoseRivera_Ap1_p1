@@ -17,10 +17,62 @@ namespace JoseRivera_Ap1_p1.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.CobroDetalle", b =>
+                {
+                    b.Property<int>("DetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CobroId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CobrosCobroId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PrestamoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal?>("ValorCobrado")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("DetalleId");
+
+                    b.HasIndex("CobrosCobroId");
+
+                    b.ToTable("cobroDetalle");
+                });
+
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
+                {
+                    b.Property<int>("CobroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DeudorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("Fecha")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CobroId");
+
+                    b.HasIndex("DeudorId");
+
+                    b.ToTable("Cobros");
+                });
+
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Deudores", b =>
                 {
                     b.Property<int>("DeudorId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CobrosCobroId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Nombres")
@@ -31,6 +83,8 @@ namespace JoseRivera_Ap1_p1.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("DeudorId");
+
+                    b.HasIndex("CobrosCobroId");
 
                     b.HasIndex("PrestamoId");
 
@@ -65,6 +119,7 @@ namespace JoseRivera_Ap1_p1.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Concepto")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("DeudorId")
@@ -81,27 +136,56 @@ namespace JoseRivera_Ap1_p1.Migrations
                     b.ToTable("Prestamos");
                 });
 
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.CobroDetalle", b =>
+                {
+                    b.HasOne("JoseRivera_Ap1_p1.Models.Cobros", null)
+                        .WithMany("CobroDetalles")
+                        .HasForeignKey("CobrosCobroId");
+                });
+
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
+                {
+                    b.HasOne("JoseRivera_Ap1_p1.Models.Deudores", "Deudor")
+                        .WithMany()
+                        .HasForeignKey("DeudorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Deudor");
+                });
+
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Deudores", b =>
                 {
+                    b.HasOne("JoseRivera_Ap1_p1.Models.Cobros", null)
+                        .WithMany("Deudores")
+                        .HasForeignKey("CobrosCobroId");
+
                     b.HasOne("JoseRivera_Ap1_p1.Models.Prestamos", null)
-                        .WithMany("Deudor")
+                        .WithMany("Deudores")
                         .HasForeignKey("PrestamoId");
                 });
 
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Prestamos", b =>
                 {
-                    b.HasOne("JoseRivera_Ap1_p1.Models.Deudores", "Deudores")
+                    b.HasOne("JoseRivera_Ap1_p1.Models.Deudores", "Deudor")
                         .WithMany()
                         .HasForeignKey("DeudorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Deudor");
+                });
+
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
+                {
+                    b.Navigation("CobroDetalles");
 
                     b.Navigation("Deudores");
                 });
 
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Prestamos", b =>
                 {
-                    b.Navigation("Deudor");
+                    b.Navigation("Deudores");
                 });
 #pragma warning restore 612, 618
         }

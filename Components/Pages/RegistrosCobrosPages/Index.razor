@@ -1,0 +1,114 @@
+﻿@page "/Cobros/Index"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject CobrosServices cobrosServices
+
+<PageTitle></PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header text-center">
+            <h5 class="card-header ">Registro Cobros</h5>
+        </div>
+
+        <div class="card-body">
+            <div class="col-md-15 text-end">
+
+                <div class="row md-3 align-content-center ">
+                    <div class="col-md-3">
+                        <label for="filtro" class="form-label">Filtrar Por:</label>
+                        <select @bind="filtro" class="form-control">
+                            <option value="id">CobroId</option>
+                            <option value="Fecha ">Fecha </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label for="valorfiltro" class="form-label">Busqueda:</label>
+                        <div class="input-group">
+                            <input @bind="valorfiltro" class="form-control" />
+                            <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
+
+                                <span class="bi bi-search-circle mt-3"></span> Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="/Cobros/Create" class="btn btn-outline-success" type="button">
+
+                    <span class="bi bi-plus-square-fill mt-3"></span> Crear
+                </a>
+
+                <table class="table table-light table-bordered">
+                    <thead class="table table-striped text-center ">
+                        <tr>
+                            <th>CobroId</th>
+                            <th>Fecha</th>
+                            <th>DeudorId</th>
+                            <th>Monto</th>
+                            <th>Ver</th>
+                            <th>Editar</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in ListaCobros)
+                        {
+                            <tr>
+                                <td class="text-center">@d.CobroId</td>
+                                <td class="text-center">@d.Fecha</td>
+                                <td class="text-center">@d.Deudor?.Nombres</td>
+                                <td class="text-center">@d.Monto</td>
+
+                                <td class="text-center">
+                                    <a href="/Prestamos/Details/@d.CobroId" class="btn btn-outline-primary bi bi-eye"></a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/Cobros/Edit/@d.CobroId" class="btn btn-outline-success bi bi-pencil-square"></a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="/Prestamos/Delete/@d.CobroId" class="btn btn-outline-danger bi bi-trash"></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="card-footer">
+    <p>Toatal:@ListaCobros.Count</p>
+</div>
+
+@code {
+    public List<Cobros> ListaCobros { get; set; } = new List<Cobros>();
+    public string filtro = "id";
+    public string valorfiltro = "";
+    protected override async Task OnInitializedAsync()
+    {
+        ListaCobros = await cobrosServices.Listar(d => true);
+    }
+
+    public async Task Buscar()
+    {
+        if (string.IsNullOrWhiteSpace(valorfiltro))
+        {
+            ListaCobros = await cobrosServices.Listar(p => true);
+        }
+        else
+        {
+            if (filtro == "id" && int.TryParse(valorfiltro, out int CobroId))
+            {
+                ListaCobros = await cobrosServices.Listar(d => d.CobroId==CobroId);
+            }
+            else if (filtro == "Fecha "&&DateTime.TryParse(valorfiltro, out DateTime Fecha))
+            {
+                ListaCobros = await cobrosServices.Listar(d => d.Fecha==Fecha);
+            }
+            
+        }
+    }
+}

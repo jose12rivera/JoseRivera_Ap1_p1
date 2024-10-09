@@ -6,7 +6,7 @@ namespace JoseRivera_Ap1_p1.Models
     {
         [Key]
         public int DeudorId { get; set; }
-        [Required(ErrorMessage = "Nombres")]
+        [Required(ErrorMessage = "Intentar Nuevamente el Nombre")]
         public string? Nombres { get; set; }
     }
 }

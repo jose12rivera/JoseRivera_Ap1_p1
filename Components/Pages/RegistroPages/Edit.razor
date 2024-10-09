@@ -32,17 +32,17 @@
             </div>
         </div>
 
-        @*Deudor*@
+        @* Deudor *@
         <div class="mb-5">
-            <label > <strong>Deudor:</strong> </label>
+            <label><strong>Deudor:</strong></label>
             <InputSelect @bind-Value="prestamo.DeudorId" class="form-control">
-                <option value="0">Elejir Un Deudor</option>
+                <option value="0">Elegir Un Deudor</option>
                 @foreach (var deudor in deudor)
                 {
-                    <option value="@deudor.DeudorId ">@deudor.Nombres</option>
+                    <option value="@deudor.DeudorId">@deudor.Nombres</option>
                 }
             </InputSelect>
-            <ValidationMessage For="@(()=>prestamo.DeudorId)" />
+            <ValidationMessage For="@(() => prestamo.DeudorId)" />
         </div>
 
         @*Concepto *@
