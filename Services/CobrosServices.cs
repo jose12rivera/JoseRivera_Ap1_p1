@@ -47,6 +47,7 @@ public class CobrosServices
     {
         return await _contexto.Cobros
             .Include(c => c.Deudor)
+            .Include(c=>c.CobroDetalles)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CobroId == id);
     }
@@ -55,6 +56,7 @@ public class CobrosServices
         return await _contexto.Cobros
            .AsNoTracking()
               .Include(c => c.Deudor)
+                .Include(c => c.CobroDetalles)
            .Where(Criterio)
            .ToListAsync();
     }
@@ -63,5 +65,16 @@ public class CobrosServices
         return await _contexto.Deudores
             .AsNoTracking()
             .ToListAsync();
+    }
+
+    public async Task<List<Deudores>> ObtenerDeudoresConPrestamos()
+    {
+        var deudoresConPrestamos = _contexto.Prestamos
+                                           .Include(p => p.Deudor)
+                                           .Select(p => p.Deudor)
+                                           .Distinct()
+                                           .ToList();
+
+        return deudoresConPrestamos;
     }
 }

@@ -20,7 +20,9 @@ public class Contexto : DbContext
         {
             new Deudores() {DeudorId=1, Nombres="Jose"},
              new Deudores() {DeudorId=2, Nombres="Josue"},
-              new Deudores() {DeudorId=3, Nombres="Juan"}
+              new Deudores() {DeudorId=3, Nombres="Juan"},
+               new Deudores() {DeudorId=4, Nombres="Verde"},
+                new Deudores() {DeudorId=5, Nombres="Pedro"}
         });
     }
 }

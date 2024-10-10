@@ -6,7 +6,7 @@
 @using Microsoft.EntityFrameworkCore
 
 <EditForm Model="prestamo" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     @if (Alerta)
     {
 
@@ -19,19 +19,19 @@
     </div>
 
     <div class="card-body">
-       @*  PrestamoId *@
+        @*  PrestamoId *@
         <div class="row">
             <div class="col-md-10 mb-5">
                 <label for="PrestamoId" class="form-label"><strong>PrestamoId:</strong></label>
                 <div class="input-group">
                     <div style="width: 40%; height: 1mm;">
-                        <InputNumber @bind-Value="prestamo.PrestamoId" class="form-control" style="font-size: 0.8rem;" aria-describedby="botonbuscar"/>
+                        <InputNumber @bind-Value="prestamo.PrestamoId" class="form-control" style="font-size: 0.8rem;" aria-describedby="botonbuscar" />
                     </div>
                 </div>
             </div>
         </div>
 
-         @*Deudor*@
+        @*Deudor*@
         <div class="mb-5">
             <label> <strong>Deudor:</strong> </label>
             <InputSelect @bind-Value="prestamo.DeudorId" class="form-control">
@@ -78,7 +78,7 @@
 </EditForm>
 @code {
     [Parameter]
-    public int PrestamoId{ get; set; }
+    public int PrestamoId { get; set; }
     public Prestamos? prestamo { get; set; } = new Prestamos();
     public List<Deudores> deudor { get; set; } = new List<Deudores>();
 
@@ -93,7 +93,7 @@
     {
         existe = false;
         var encontrado = await prestamosServices.Buscar(prestamo.PrestamoId);
-        if(encontrado != null)
+        if (encontrado != null)
         {
             prestamo = encontrado;
         }
@@ -115,7 +115,7 @@
 
     public async Task Guardar()
     {
-        if(!await Validar())
+        if (!await Validar())
         {
             return;
         }

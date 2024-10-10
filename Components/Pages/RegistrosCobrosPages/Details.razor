@@ -1,0 +1,141 @@
+﻿@page "/Cobros/Details"
+@page "/Cobros/Details/{CobroId:int}"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject CobrosServices cobrosServices
+@inject PrestamosServices prestamosServices
+@using JoseRivera_Ap1_p1.DAL
+@using Microsoft.EntityFrameworkCore
+
+@if (cobro != null)
+{
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-header ">Detalles del Cobro</h5>
+            </div>
+            <div class="container">
+
+                <div class="mb-3 row">
+                    <label for="CobroId" class="col-md-2 text-end col-form-label"><strong>CobroId:</strong></label>
+                    <div class="col-md-1">
+                        <p class="form-control-plaintext">@cobro?.CobroId</p>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="Fecha" class="col-md-2 text-end col-form-label"><strong>Fecha:</strong></label>
+                    <div class="col-md-1">
+                        <p class="form-control-plaintext">@cobro?.Fecha?.ToString("dd/MM/yy")</p>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="Deudor" class="col-md-2 text-end col-form-label"><strong>Deudor:</strong></label>
+                    <div class="col-md-1">
+                        <p class="form-control-plaintext"> @listadeudor?.FirstOrDefault(d => d.DeudorId == cobro?.DeudorId)?.Nombres</p>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="Monto" class="col-md-2 text-end col-form-label"><strong>Monto:</strong></label>
+                    <div class="col-md-1">
+                        <p class="form-control-plaintext">@cobro?.Monto</p>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+
+        <div class="card shadow-lg mt-3">
+            <div class="card-header text-center">
+                <h5 class="card-header ">Detalles del Cobro</h5>
+            </div>
+            <div class="container">
+                <div class="card-body">
+                    
+                    @foreach (var detalle in cobro.CobroDetalles)
+                    {
+                        <div class="mb-3 row">
+                            <label class="col-md-2 text-end col-form-label"><strong>DetalleId:</strong></label>
+                            <div class="col-md-1">
+                                <p class="form-control-plaintext">@detalle.DetalleId</p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-md-2 text-end col-form-label"><strong>CobroId:</strong></label>
+                            <div class="col-md-1">
+                                <p class="form-control-plaintext">@detalle.CobroId</p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-md-2 text-end col-form-label"><strong>PrestamoId:</strong></label>
+                            <div class="col-md-1">
+                                <p class="form-control-plaintext">@detalle.PrestamoId</p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-md-2 text-end col-form-label"><strong>ValorCobrado:</strong></label>
+                            <div class="col-md-1">
+                                <p class="form-control-plaintext">@detalle.ValorCobrado</p>
+                            </div>
+                        </div>
+                        <hr />
+                    }
+
+                    <h5>Detalles en Tabla</h5>
+                    <table class="table table-light table-bordered">
+                        <thead class="table table-striped text-center">
+                            <tr>
+                                <th>DetalleId</th>
+                                <th>CobroId</th>
+                                <th>PrestamoId</th>
+                                <th>ValorCobrado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalle in cobro.CobroDetalles)
+                            {
+                                <tr>
+                                    <td>@detalle.DetalleId</td>
+                                    <td>@detalle.CobroId</td>
+                                    <td>@detalle.PrestamoId</td>
+                                    <td>@detalle.ValorCobrado</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <button type="button" @onclick="Volver" class="btn btn-outline-primary">
+                <span class="bi bi-arrow-left mt-3"></span>
+                Volver
+            </button>
+        </div>
+    </div>
+}
+else
+{
+    <p>No se encontró el cobro.</p>
+}
+
+@code {
+    [Parameter]
+    public int CobroId { get; set; }
+    public Cobros? cobro { get; set; } = new Cobros();
+    public List<Deudores> listadeudor { get; set; } = new List<Deudores>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cobro = await cobrosServices.Buscar(CobroId);
+        listadeudor = await cobrosServices.ListarDeudore();
+    }
+
+    public async Task Volver()
+    {
+        navigationManager.NavigateTo("/Cobros/Index");
+    }
+}

@@ -163,18 +163,39 @@
     public List<Deudores> deudor { get; set; } = new List<Deudores>();
     public Prestamos? prestamo { get; set; } = new Prestamos();
     public List<CobroDetalle> ListacobroDetalle { get; set; } = new List<CobroDetalle>();
+    private bool modoeditar = false;
 
     protected override async Task OnInitializedAsync()
     {
+
         deudor = await cobrosServices.ListarDeudore();
-        if(CobroId !=0)
+        cobro = await cobrosServices.Buscar(CobroId);
+        if (CobroId != 0)
         {
-            cobro = await cobrosServices.Buscar(CobroId) ?? new Cobros();
+            ListacobroDetalle = cobro.CobroDetalles.ToList();
+        }
+    }
+
+    public async Task Buscar()
+    {
+        existe = false;
+        var encontrado = await cobrosServices.Buscar(cobro.CobroId);
+        if (encontrado != null)
+        {
+            cobro = encontrado;
+            ListacobroDetalle = cobro.CobroDetalles.ToList();
+            existe = true;
+        }
+        else
+        {
+            Nuevo();
+            
         }
     }
     public async Task Nuevo()
     {
         cobro = new Cobros();
+        cobroDetalle = new CobroDetalle();
         existe = false;
     }
 
@@ -187,10 +208,7 @@
     public async Task Guardar()
     {
         cobro.CobroDetalles = ListacobroDetalle;
-        if (!await Validar())
-        {
-            return;
-        }
+        
         var guardado = await cobrosServices.Guardar(cobro);
         if (guardado)
         {
@@ -198,26 +216,51 @@
         }
 
     }
-   
+
     public async Task EliminarDetalle(CobroDetalle detalle)
     {
         ListacobroDetalle.Remove(detalle);
     }
 
-    public async Task AgregarDetalle()
+    public void AgregarDetalle()
     {
-        ListacobroDetalle.Add(new CobroDetalle
-            {
-                DetalleId = cobroDetalle.DetalleId,
-                CobroId = cobro.CobroId,
-                PrestamoId = prestamo.PrestamoId,
-                ValorCobrado = cobroDetalle.ValorCobrado
-            });
-
-        cobroDetalle = new CobroDetalle();
-        prestamo = new Prestamos();
+        var detalleExistente = ListacobroDetalle.FirstOrDefault(d => d.DetalleId == cobroDetalle.DetalleId);
+        if (detalleExistente == null && cobro.CobroId > 0)
+        {
+            ListacobroDetalle.Add(new CobroDetalle
+                {
+                    DetalleId = cobroDetalle.DetalleId,
+                    CobroId = cobro.CobroId,
+                    PrestamoId = prestamo.PrestamoId,
+                    ValorCobrado = cobroDetalle.ValorCobrado
+                });
+            cobroDetalle = new CobroDetalle(); // Reset cobrodetalle after adding
+            prestamo.PrestamoId = 0; // Reset PrestamoId after adding
+        }
+        else
+        {
+            EditarDetalle();
+        }
     }
 
+    public void CargarDetalle(CobroDetalle detalle)
+    {
+        cobroDetalle = detalle;
+        prestamo.PrestamoId = detalle.PrestamoId;
+        modoeditar = true;
+    }
+    public void EditarDetalle()
+    {
+        var detalleExistente = ListacobroDetalle.FirstOrDefault(d => d.DetalleId == cobroDetalle.DetalleId);
+        if (detalleExistente != null)
+        {
+            detalleExistente.PrestamoId = prestamo.PrestamoId;
+            detalleExistente.ValorCobrado = cobroDetalle.ValorCobrado;
+        }
+        cobroDetalle = new CobroDetalle();
+        prestamo.PrestamoId = 0;
+        modoeditar = false;
+    }
 
 
     public async Task Volver()

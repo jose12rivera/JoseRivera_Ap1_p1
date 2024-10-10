@@ -17,7 +17,7 @@ public class Prestamos
     public decimal? Monto { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el Balance")]
     public decimal? Balance { get; set; }
-
+   
     [ForeignKey("PrestamoId")]
     public ICollection<Deudores> Deudores { get; set; } = new List<Deudores>();
 }   

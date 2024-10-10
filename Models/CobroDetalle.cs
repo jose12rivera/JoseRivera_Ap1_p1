@@ -8,11 +8,14 @@ public class CobroDetalle
     [Key]
     public int DetalleId { get; set; }
 
-    [ForeignKey("CobroId")]
+  
     public int CobroId { get; set; }
-    [Required(ErrorMessage = "Intentar Nuevamente el PrestamoIdf")]
+    [ForeignKey("CobroId")]
+    public Cobros cobros { get; set; }
+    [Required(ErrorMessage = "Intentar Nuevamente el PrestamoId")]
     public int PrestamoId { get; set; }
-
+    [ForeignKey("PrestamoId")]
+    public Prestamos Prestamos { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el valorCobrado")]
     public decimal? ValorCobrado { get; set; }
 
