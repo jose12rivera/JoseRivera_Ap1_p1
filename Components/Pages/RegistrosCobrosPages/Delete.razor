@@ -108,7 +108,12 @@
         </div>
     </div>
 
-
+    @if (eliminado)
+    {
+        <div class="alert alert-danger" role="alert">
+             eliminado el registro con todos y detalles correctamente.
+        </div>
+    }
     <div class="card-footer">
         <button type="button" @onclick="EliminarCobro" class="btn btn-outline-danger">
             <span class="bi bi-trash mt-3"></span>
@@ -128,6 +133,7 @@
     public int CobroId { get; set; }
     public Cobros? cobro { get; set; } = new Cobros();
     public List<Deudores> listadeudor { get; set; } = new List<Deudores>();
+    private bool eliminado;
 
     protected override async Task OnInitializedAsync()
     {
@@ -143,7 +149,7 @@
 
         if (await cobrosServices.Eliminar(CobroId))
         {
-            Volver();
+            eliminado = true;
         }
     }
     public async Task Volver()

@@ -104,10 +104,11 @@
             {
                 ListaCobros = await cobrosServices.Listar(d => d.CobroId==CobroId);
             }
-            else if (filtro == "Fecha "&&DateTime.TryParse(valorfiltro, out DateTime Fecha))
+            else if (filtro == "Fecha" && DateTime.TryParse(valorfiltro, out DateTime Fecha))
             {
-                ListaCobros = await cobrosServices.Listar(d => d.Fecha==Fecha);
+                ListaCobros = await cobrosServices.Listar(d => d.Fecha == Fecha);
             }
+
             
         }
     }

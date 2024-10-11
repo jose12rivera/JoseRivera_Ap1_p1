@@ -28,12 +28,12 @@ public class CobrosServices
     public async Task<bool> Modificar(Cobros cobro)
     {
         var cobroExistente = await _contexto.Cobros
-                                            .Include(c => c.CobroDetalles)
-                                            .FirstOrDefaultAsync(c => c.CobroId == cobro.CobroId);
+        .Include(c => c.CobroDetalles)
+        .FirstOrDefaultAsync(c => c.CobroId == cobro.CobroId);
 
         if (cobroExistente != null)
         {
-            // Eliminar los detalles que ya no existen
+            
             foreach (var detalleExistente in cobroExistente.CobroDetalles.ToList())
             {
                 if (!cobro.CobroDetalles.Any(d => d.DetalleId == detalleExistente.DetalleId))
@@ -42,10 +42,10 @@ public class CobrosServices
                 }
             }
 
-            // Actualizar los detalles existentes
+           
             cobroExistente.CobroDetalles = cobro.CobroDetalles;
 
-            // Actualizar otros campos del cobro
+          
             _contexto.Entry(cobroExistente).CurrentValues.SetValues(cobro);
             return await _contexto.SaveChangesAsync() > 0;
         }
@@ -78,16 +78,16 @@ public class CobrosServices
     public async Task<Prestamos?> ObtenerPrestamoPorDeudorId(int deudorId)
     {
         return await _contexto.Prestamos
-                             .Where(p => p.DeudorId == deudorId)
-                             .OrderByDescending(p => p.PrestamoId) // Por si el deudor tiene más de un préstamo
-                             .FirstOrDefaultAsync();
+        .Where(p => p.DeudorId == deudorId)
+        .OrderByDescending(p => p.PrestamoId) 
+        .FirstOrDefaultAsync();
     }
     public async Task<List<Cobros>> Listar(Expression<Func<Cobros, bool>> Criterio)
     {
         return await _contexto.Cobros
            .AsNoTracking()
-              .Include(c => c.Deudor)
-                .Include(c => c.CobroDetalles)
+           .Include(c => c.Deudor)
+           .Include(c => c.CobroDetalles)
            .Where(Criterio)
            .ToListAsync();
     }
@@ -101,10 +101,10 @@ public class CobrosServices
     public async Task<List<Deudores>> ObtenerDeudoresConPrestamos()
     {
         var deudoresConPrestamos = _contexto.Prestamos
-                                           .Include(p => p.Deudor)
-                                           .Select(p => p.Deudor)
-                                           .Distinct()
-                                           .ToList();
+          .Include(p => p.Deudor)
+          .Select(p => p.Deudor)
+          .Distinct()
+          .ToList();
 
         return deudoresConPrestamos;
     }

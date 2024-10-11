@@ -8,13 +8,13 @@
 
 <EditForm Model="cobro" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-
+   
     <div class="container">
         <div class="card shadow-lg mt-3">
             <div class="card-header text-center">
                 <h5 class="card-header ">Registro Cobros</h5>
             </div>
-
+            
             <div class="card-body">
                 @* CobroId *@
                 <div class="row">
@@ -70,6 +70,13 @@
                             Agregar
                         </button>
                     </div>
+                    @if (Agregar)
+                    {
+
+                        <div class="alert alert-info" role="alert">
+                            se agrego el Cobros.
+                        </div>
+                    }
 
                     @* DetalleId *@
                     <div class="row">
@@ -124,6 +131,7 @@
                                     <td>@detalle.ValorCobrado</td>
                                     <td class="text-center">
                                         <a class="btn btn-outline-danger bi bi-trash" @onclick="() => EliminarDetalle(detalle)"></a>
+                                       
                                     </td>
                                 </tr>
                             }
@@ -133,7 +141,13 @@
             </div>
         </div>
     </div>
+    @if (Alerta)
+    {
 
+        <div class="alert alert-success" role="alert">
+            se guardo el Cobro Detalles.
+        </div>
+    }
     <div class="card-footer justify-content-center">
         <div class="btn-group">
             <button type="submit" class="btn btn-outline-success">
@@ -156,9 +170,9 @@
     public CobroDetalle cobroDetalle { get; set; } = new CobroDetalle();
     public List<CobroDetalle> ListacobroDetalle { get; set; } = new List<CobroDetalle>();
     public List<Deudores> deudor { get; set; } = new List<Deudores>();
-
+    private bool Alerta;
     private bool existe = false;
-
+    private bool Agregar;
     public async Task Nuevo()
     {
         cobro = new Cobros();
@@ -197,23 +211,22 @@
         var guardado = await cobrosServices.Guardar(cobro);
         if (guardado)
         {
-            await Nuevo();
+            Alerta = true;
         }
     }
-    // Este método se ejecuta al seleccionar un deudor
+
     private async Task OnDeudorSelected(ChangeEventArgs e)
     {
         int selectedDeudorId = Convert.ToInt32(e.Value);
         cobro.DeudorId = selectedDeudorId;
 
-        // Verificamos que se haya seleccionado un deudor válido
         if (selectedDeudorId > 0)
         {
-            // Llamamos al método para obtener el préstamo asociado a ese deudor
+
             var prestamo = await cobrosServices.ObtenerPrestamoPorDeudorId(selectedDeudorId);
             if (prestamo != null)
             {
-                // Asignamos el monto del préstamo al campo Monto
+
                 cobro.Monto = prestamo.Monto ?? 0;
             }
         }
@@ -223,12 +236,13 @@
         deudor = await cobrosServices.ObtenerDeudoresConPrestamos();
     }
 
-    public void EliminarDetalle(CobroDetalle detalle)
+    public async Task EliminarDetalle(CobroDetalle detalle)
     {
         ListacobroDetalle.Remove(detalle);
+      
     }
 
-    public void AgregarDetalle()
+    public async Task AgregarDetalle()
     {
         ListacobroDetalle.Add(new CobroDetalle
             {
@@ -237,11 +251,13 @@
                 PrestamoId = cobroDetalle.PrestamoId,
                 ValorCobrado = cobroDetalle.ValorCobrado
             });
-
+       
+       Agregar= true;
         cobroDetalle = new CobroDetalle();
+       
     }
 
-    public void Volver()
+    public async Task Volver()
     {
         navigationManager.NavigateTo("/Cobros/Index");
     }
