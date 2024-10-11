@@ -54,7 +54,7 @@
                         {
                             <tr>
                                 <td class="text-center">@d.CobroId</td>
-                                <td class="text-center">@d.Fecha?.ToString("MM/dd/yyyy")</td> 
+                                <td class="text-center">@d.Fecha</td> 
                                 <td class="text-center">@d.Deudor?.Nombres</td>
                                 <td class="text-center">@d.Monto</td>
 
@@ -105,8 +105,7 @@
             }
             else if (filtro == "Fecha" && DateTime.TryParse(valorfiltro, out DateTime Fecha))
             {
-                
-                ListaCobros = await cobrosServices.Listar(d => d.Fecha.HasValue && d.Fecha.Value.Date == Fecha.Date);
+                ListaCobros = await cobrosServices.Listar(t => t.Fecha == Fecha);
             }
             else
             {
