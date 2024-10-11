@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JoseRivera_Ap1_p1.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20241010211839_Parcial")]
+    [Migration("20241011014101_Parcial")]
     partial class Parcial
     {
         /// <inheritdoc />
