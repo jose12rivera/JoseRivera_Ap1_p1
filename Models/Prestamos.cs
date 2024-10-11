@@ -15,6 +15,7 @@ public class Prestamos
     public string? Concepto  { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el Monto")]
     public decimal? Monto { get; set; }
+
     [Required(ErrorMessage = "Intentar Nuevamente el Balance")]
     public decimal? Balance { get; set; }
    
