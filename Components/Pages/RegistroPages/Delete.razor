@@ -4,8 +4,6 @@
 @inject NavigationManager navigationManager
 @inject PrestamosServices prestamosServices
 
-
-
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header text-center">
@@ -38,8 +36,6 @@
                 Volver
             </button>
         </div>
-
-       
     </div>
 
     @if (Alerta)
@@ -55,7 +51,6 @@
     public int PrestamoId { get; set; }
     public Prestamos? prestamo { get; set; } = new Prestamos();
     private bool existe = false;
-    
     private bool Alerta;
     protected override async Task OnInitializedAsync()
     {
