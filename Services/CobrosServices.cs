@@ -24,11 +24,35 @@ public class CobrosServices
         return await _contexto.SaveChangesAsync() > 0;
     }
 
-    private async Task<bool> Modificar(Cobros cobro)
+
+    public async Task<bool> Modificar(Cobros cobro)
     {
-        _contexto.Cobros.Update(cobro);
-        return await _contexto.SaveChangesAsync() > 0;
+        var cobroExistente = await _contexto.Cobros
+                                            .Include(c => c.CobroDetalles)
+                                            .FirstOrDefaultAsync(c => c.CobroId == cobro.CobroId);
+
+        if (cobroExistente != null)
+        {
+            // Eliminar los detalles que ya no existen
+            foreach (var detalleExistente in cobroExistente.CobroDetalles.ToList())
+            {
+                if (!cobro.CobroDetalles.Any(d => d.DetalleId == detalleExistente.DetalleId))
+                {
+                    _contexto.cobroDetalle.Remove(detalleExistente);
+                }
+            }
+
+            // Actualizar los detalles existentes
+            cobroExistente.CobroDetalles = cobro.CobroDetalles;
+
+            // Actualizar otros campos del cobro
+            _contexto.Entry(cobroExistente).CurrentValues.SetValues(cobro);
+            return await _contexto.SaveChangesAsync() > 0;
+        }
+
+        return false;
     }
+
     public async Task<bool> Guardar(Cobros cobro)
     {
         if (!await Existe(cobro.CobroId))
@@ -50,6 +74,13 @@ public class CobrosServices
             .Include(c=>c.CobroDetalles)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CobroId == id);
+    }
+    public async Task<Prestamos?> ObtenerPrestamoPorDeudorId(int deudorId)
+    {
+        return await _contexto.Prestamos
+                             .Where(p => p.DeudorId == deudorId)
+                             .OrderByDescending(p => p.PrestamoId) // Por si el deudor tiene más de un préstamo
+                             .FirstOrDefaultAsync();
     }
     public async Task<List<Cobros>> Listar(Expression<Func<Cobros, bool>> Criterio)
     {

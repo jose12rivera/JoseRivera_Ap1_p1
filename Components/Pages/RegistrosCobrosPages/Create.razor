@@ -34,28 +34,28 @@
                     <ValidationMessage For="@(() => cobro.Fecha)" />
                 </div>
 
-                <!-- DeudorId -->
-                <div class="mb-5">
-                    <label><strong>DeudorId:</strong></label>
-                    <InputSelect @bind-Value="cobro.DeudorId" class="form-control">
-                        <option value="0">Elegir Un Deudor</option>
-                        @foreach (var deudor in deudor)
-                        {
-                            <option value="@deudor.DeudorId">@deudor.Nombres</option>
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="@(() => cobro.DeudorId)" />
-                </div>
-                @* Monto *@
-                <div class="mb-5">
-                    <label for="Monto" class="form-label"><strong>Monto:</strong></label>
-                    <InputNumber @bind-Value="cobro.Monto" class="form-control" />
-                    <ValidationMessage For="@(() => cobro.Monto)" />
+                <div class="mb-3 row">
+                    <div class="col-sm-6">
+                        <label for="Deudor" class="col-form-label">Deudor:</label>
+                        <select @onchange="OnDeudorSelected" class="form-control">
+                            <option value="0">Seleccione un deudor</option>
+                            @foreach (var deudor in deudor)
+                            {
+                                <option value="@deudor.DeudorId">@deudor.Nombres</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => cobro.DeudorId)" />
+                    </div>
+                    @* Monto *@
+                    <div class="mb-5">
+                        <label for="Monto" class="form-label"><strong>Monto:</strong></label>
+                        <InputNumber @bind-Value="cobro.Monto" class="form-control" />
+                        <ValidationMessage For="@(() => cobro.Monto)" />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="container">
         <div class="card shadow-lg mt-3">
             <div class="card-header text-center">
@@ -200,7 +200,24 @@
             await Nuevo();
         }
     }
+    // Este método se ejecuta al seleccionar un deudor
+    private async Task OnDeudorSelected(ChangeEventArgs e)
+    {
+        int selectedDeudorId = Convert.ToInt32(e.Value);
+        cobro.DeudorId = selectedDeudorId;
 
+        // Verificamos que se haya seleccionado un deudor válido
+        if (selectedDeudorId > 0)
+        {
+            // Llamamos al método para obtener el préstamo asociado a ese deudor
+            var prestamo = await cobrosServices.ObtenerPrestamoPorDeudorId(selectedDeudorId);
+            if (prestamo != null)
+            {
+                // Asignamos el monto del préstamo al campo Monto
+                cobro.Monto = prestamo.Monto ?? 0;
+            }
+        }
+    }
     protected override async Task OnInitializedAsync()
     {
         deudor = await cobrosServices.ObtenerDeudoresConPrestamos();
