@@ -11,7 +11,6 @@ public class Contexto : DbContext
     public DbSet<Deudores> Deudores { get; set; }
     public DbSet<Cobros> Cobros{ get; set; }
     public DbSet<CobroDetalle> cobroDetalle { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
