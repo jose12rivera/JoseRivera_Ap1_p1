@@ -14,7 +14,6 @@ public class Cobros
     [ForeignKey("DeudorId")]
     public Deudores? Deudor { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el Deudor")]
- 
     public decimal Monto { get; set; }
     public ICollection<CobroDetalle> CobroDetalles { get; set; } = new List<CobroDetalle>();
 }
