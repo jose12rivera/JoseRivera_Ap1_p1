@@ -7,8 +7,6 @@ public class CobroDetalle
 {
     [Key]
     public int DetalleId { get; set; }
-
-  
     public int CobroId { get; set; }
     [ForeignKey("CobroId")]
     public Cobros cobros { get; set; }
