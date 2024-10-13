@@ -48,12 +48,12 @@
 
     <div class="card shadow-lg mt-3">
         <div class="card-header text-center">
-            <h5 class="card-header ">Eliminar Detalles del Cobro</h5>
+            <h5 class="card-header ">Eliminar CobrosDetalles</h5>
         </div>
         <div class="container">
             <div class="card-body">
 
-                @foreach (var detalle in cobro.CobroDetalles)
+                @foreach (var detalle in cobro.CobrosDetalle)
                 {
                     <div class="mb-3 row">
                         <label class="col-md-2 text-end col-form-label"><strong>DetalleId:</strong></label>
@@ -93,7 +93,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var detalle in cobro.CobroDetalles)
+                        @foreach (var detalle in cobro.CobrosDetalle)
                         {
                             <tr>
                                 <td>@detalle.DetalleId</td>
