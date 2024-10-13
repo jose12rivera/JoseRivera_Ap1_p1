@@ -37,7 +37,7 @@ public class CobrosServices
             {
                 if (!cobro.CobroDetalles.Any(d => d.DetalleId == detalleExistente.DetalleId))
                 {
-                    _contexto.cobroDetalle.Remove(detalleExistente);
+                    _contexto.CobrosDetalle.Remove(detalleExistente);
                 }
             }
 
