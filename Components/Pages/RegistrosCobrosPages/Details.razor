@@ -11,7 +11,7 @@
 {
     <div class="container">
         <div class="card shadow-lg">
-            <div class="card-header text-center">
+            <div class="card-header ">
                 <h5 class="card-header ">Detalles del Cobro</h5>
             </div>
             <div class="container">
@@ -47,7 +47,7 @@
         </div>
 
         <div class="card shadow-lg mt-3">
-            <div class="card-header text-center">
+            <div class="card-header">
                 <h5 class="card-header ">Detalles CobrosDetalle</h5>
             </div>
             <div class="container">
@@ -73,16 +73,10 @@
                                 <p class="form-control-plaintext">@detalle.PrestamoId</p>
                             </div>
                         </div>
-                        <div class="mb-3 row">
-                            <label class="col-md-2 text-end col-form-label"><strong>ValorCobrado:</strong></label>
-                            <div class="col-md-1">
-                                <p class="form-control-plaintext">@detalle.ValorCobrado</p>
-                            </div>
-                        </div>
+                       
                         <hr />
                     }
 
-                    <h5>Detalles en Tabla</h5>
                     <table class="table table-light table-bordered">
                         <thead class="table table-striped text-center">
                             <tr>
@@ -104,6 +98,13 @@
                             }
                         </tbody>
                     </table>
+                    @*ValorCobrado  *@
+                    <div class="mb-3 row">
+                        <label class="col-md-2 text-end col-form-label"><strong>ValorCobrado:</strong></label>
+                        <div class="col-md-1">
+                            <p class="form-control-plaintext">@cobro.CobrosDetalle.Sum(d => d.ValorCobrado)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
