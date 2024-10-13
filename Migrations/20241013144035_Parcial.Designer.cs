@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JoseRivera_Ap1_p1.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20241011014101_Parcial")]
+    [Migration("20241013144035_Parcial")]
     partial class Parcial
     {
         /// <inheritdoc />
@@ -19,31 +19,6 @@ namespace JoseRivera_Ap1_p1.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
-
-            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.CobroDetalle", b =>
-                {
-                    b.Property<int>("DetalleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CobroId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PrestamoId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal?>("ValorCobrado")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("DetalleId");
-
-                    b.HasIndex("CobroId");
-
-                    b.HasIndex("PrestamoId");
-
-                    b.ToTable("cobroDetalle");
-                });
 
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
                 {
@@ -66,6 +41,31 @@ namespace JoseRivera_Ap1_p1.Migrations
                     b.HasIndex("DeudorId");
 
                     b.ToTable("Cobros");
+                });
+
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.CobrosDetalle", b =>
+                {
+                    b.Property<int>("DetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CobroId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PrestamoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal?>("ValorCobrado")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("DetalleId");
+
+                    b.HasIndex("CobroId");
+
+                    b.HasIndex("PrestamoId");
+
+                    b.ToTable("CobrosDetalle");
                 });
 
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Deudores", b =>
@@ -143,10 +143,21 @@ namespace JoseRivera_Ap1_p1.Migrations
                     b.ToTable("Prestamos");
                 });
 
-            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.CobroDetalle", b =>
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
+                {
+                    b.HasOne("JoseRivera_Ap1_p1.Models.Deudores", "Deudor")
+                        .WithMany()
+                        .HasForeignKey("DeudorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Deudor");
+                });
+
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.CobrosDetalle", b =>
                 {
                     b.HasOne("JoseRivera_Ap1_p1.Models.Cobros", "cobros")
-                        .WithMany("CobroDetalles")
+                        .WithMany("CobrosDetalle")
                         .HasForeignKey("CobroId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -160,17 +171,6 @@ namespace JoseRivera_Ap1_p1.Migrations
                     b.Navigation("Prestamos");
 
                     b.Navigation("cobros");
-                });
-
-            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
-                {
-                    b.HasOne("JoseRivera_Ap1_p1.Models.Deudores", "Deudor")
-                        .WithMany()
-                        .HasForeignKey("DeudorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Deudor");
                 });
 
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Deudores", b =>
@@ -193,7 +193,7 @@ namespace JoseRivera_Ap1_p1.Migrations
 
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
                 {
-                    b.Navigation("CobroDetalles");
+                    b.Navigation("CobrosDetalle");
                 });
 
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Prestamos", b =>

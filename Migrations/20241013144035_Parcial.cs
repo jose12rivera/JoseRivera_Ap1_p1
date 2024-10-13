@@ -14,21 +14,6 @@ namespace JoseRivera_Ap1_p1.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "cobroDetalle",
-                columns: table => new
-                {
-                    DetalleId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CobroId = table.Column<int>(type: "INTEGER", nullable: false),
-                    PrestamoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ValorCobrado = table.Column<decimal>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_cobroDetalle", x => x.DetalleId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Cobros",
                 columns: table => new
                 {
@@ -41,6 +26,27 @@ namespace JoseRivera_Ap1_p1.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cobros", x => x.CobroId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CobrosDetalle",
+                columns: table => new
+                {
+                    DetalleId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CobroId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PrestamoId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ValorCobrado = table.Column<decimal>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CobrosDetalle", x => x.DetalleId);
+                    table.ForeignKey(
+                        name: "FK_CobrosDetalle_Cobros_CobroId",
+                        column: x => x.CobroId,
+                        principalTable: "Cobros",
+                        principalColumn: "CobroId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,19 +98,19 @@ namespace JoseRivera_Ap1_p1.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_cobroDetalle_CobroId",
-                table: "cobroDetalle",
-                column: "CobroId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_cobroDetalle_PrestamoId",
-                table: "cobroDetalle",
-                column: "PrestamoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cobros_DeudorId",
                 table: "Cobros",
                 column: "DeudorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CobrosDetalle_CobroId",
+                table: "CobrosDetalle",
+                column: "CobroId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CobrosDetalle_PrestamoId",
+                table: "CobrosDetalle",
+                column: "PrestamoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Deudores_PrestamoId",
@@ -117,27 +123,19 @@ namespace JoseRivera_Ap1_p1.Migrations
                 column: "DeudorId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_cobroDetalle_Cobros_CobroId",
-                table: "cobroDetalle",
-                column: "CobroId",
-                principalTable: "Cobros",
-                principalColumn: "CobroId",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_cobroDetalle_Prestamos_PrestamoId",
-                table: "cobroDetalle",
-                column: "PrestamoId",
-                principalTable: "Prestamos",
-                principalColumn: "PrestamoId",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_Cobros_Deudores_DeudorId",
                 table: "Cobros",
                 column: "DeudorId",
                 principalTable: "Deudores",
                 principalColumn: "DeudorId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CobrosDetalle_Prestamos_PrestamoId",
+                table: "CobrosDetalle",
+                column: "PrestamoId",
+                principalTable: "Prestamos",
+                principalColumn: "PrestamoId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
@@ -152,20 +150,20 @@ namespace JoseRivera_Ap1_p1.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Deudores_Prestamos_PrestamoId",
-                table: "Deudores");
+                name: "FK_Prestamos_Deudores_DeudorId",
+                table: "Prestamos");
 
             migrationBuilder.DropTable(
-                name: "cobroDetalle");
+                name: "CobrosDetalle");
 
             migrationBuilder.DropTable(
                 name: "Cobros");
 
             migrationBuilder.DropTable(
-                name: "Prestamos");
+                name: "Deudores");
 
             migrationBuilder.DropTable(
-                name: "Deudores");
+                name: "Prestamos");
         }
     }
 }
