@@ -185,7 +185,7 @@
 
         if (CobroId != 0)
         {
-            ListacobroDetalle = cobro.CobroDetalles.ToList();
+            ListacobroDetalle = cobro.CobrosDetalle.ToList();
         }
     }
 
@@ -234,10 +234,10 @@
       
         foreach (var detalleEliminado in detallesEliminados)
         {
-            cobro.CobroDetalles.Remove(detalleEliminado);
+            cobro.CobrosDetalle.Remove(detalleEliminado);
         }
 
-        cobro.CobroDetalles = ListacobroDetalle;
+        cobro.CobrosDetalle = ListacobroDetalle;
 
         var guardado = await cobrosServices.Guardar(cobro);
         if (guardado)
