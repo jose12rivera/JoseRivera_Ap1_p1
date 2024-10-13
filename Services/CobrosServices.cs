@@ -27,21 +27,21 @@ public class CobrosServices
     public async Task<bool> Modificar(Cobros cobro)
     {
         var cobroExistente = await _contexto.Cobros
-        .Include(c => c.CobroDetalles)
+        .Include(c => c.CobrosDetalle)
         .FirstOrDefaultAsync(c => c.CobroId == cobro.CobroId);
 
         if (cobroExistente != null)
         {
             
-            foreach (var detalleExistente in cobroExistente.CobroDetalles.ToList())
+            foreach (var detalleExistente in cobroExistente.CobrosDetalle.ToList())
             {
-                if (!cobro.CobroDetalles.Any(d => d.DetalleId == detalleExistente.DetalleId))
+                if (!cobro.CobrosDetalle.Any(d => d.DetalleId == detalleExistente.DetalleId))
                 {
                     _contexto.CobrosDetalle.Remove(detalleExistente);
                 }
             }
 
-            cobroExistente.CobroDetalles = cobro.CobroDetalles;
+            cobroExistente.CobrosDetalle = cobro.CobrosDetalle;
 
             _contexto.Entry(cobroExistente).CurrentValues.SetValues(cobro);
             return await _contexto.SaveChangesAsync() > 0;
@@ -70,7 +70,7 @@ public class CobrosServices
     {
         return await _contexto.Cobros
             .Include(c => c.Deudor)
-            .Include(c=>c.CobroDetalles)
+            .Include(c=>c.CobrosDetalle)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CobroId == id);
     }
@@ -88,7 +88,7 @@ public class CobrosServices
         return await _contexto.Cobros
            .AsNoTracking()
            .Include(c => c.Deudor)
-           .Include(c => c.CobroDetalles)
+           .Include(c => c.CobrosDetalle)
            .Where(Criterio)
            .ToListAsync();
     }
