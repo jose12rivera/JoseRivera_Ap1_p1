@@ -13,7 +13,7 @@
     <div class="container">
         <div class="card shadow-lg mt-3">
             <div class="card-header text-center">
-                <h5 class="card-header ">Registro Cobros</h5>
+                <h5 class="card-header ">Modificar Registro Cobros</h5>
             </div>
 
             <div class="card-body">
@@ -61,7 +61,7 @@
     <div class="container">
         <div class="card shadow-lg mt-3">
             <div class="card-header text-center">
-                <h5 class="card-header ">Registro CobroDetalle</h5>
+                <h5 class="card-header "> Modificar Registro CobrosDetalle</h5>
             </div>
 
             <div class="container">
@@ -89,29 +89,29 @@
                     <div class="row">
                         <div class="col-md-8 mb-5">
                             <label for="DetalleId " class="form-label"><strong>DetalleId:</strong></label>
-                            <InputNumber @bind-Value="cobroDetalle.DetalleId" class="form-control" style="font-size: 0.8rem;" />
+                            <InputNumber @bind-Value="cobrosDetalle.DetalleId" class="form-control" style="font-size: 0.8rem;" />
                         </div>
                     </div>
 
                     <!-- CobroId -->
                     <div class="mb-5">
                         <label><strong>CobroId:</strong></label>
-                        <InputNumber @bind-Value="cobroDetalle.CobroId" class="form-control" />
-                        <ValidationMessage For="@(()=>cobroDetalle.CobroId)" />
+                        <InputNumber @bind-Value="cobrosDetalle.CobroId" class="form-control" />
+                        <ValidationMessage For="@(()=>cobrosDetalle.CobroId)" />
                     </div>
 
                     <!-- PrestamoId -->
                     <div class="mb-5">
                         <label><strong>PrestamoId:</strong></label>
-                        <InputNumber @bind-Value="cobroDetalle.PrestamoId" class="form-control" />
-                        <ValidationMessage For="@(()=>cobroDetalle.PrestamoId)" />
+                        <InputNumber @bind-Value="cobrosDetalle.PrestamoId" class="form-control" />
+                        <ValidationMessage For="@(()=>cobrosDetalle.PrestamoId)" />
                     </div>
 
                     <!-- ValorCobrado -->
                     <div class="mb-5">
                         <label><strong>ValorCobrado:</strong></label>
-                        <InputNumber @bind-Value="cobroDetalle.ValorCobrado" class="form-control" />
-                        <ValidationMessage For="@(()=>cobroDetalle.ValorCobrado)" />
+                        <InputNumber @bind-Value="cobrosDetalle.ValorCobrado" class="form-control" />
+                        <ValidationMessage For="@(()=>cobrosDetalle.ValorCobrado)" />
                     </div>
 
                     <!-- Tabla de detalles -->
@@ -169,10 +169,10 @@
     [Parameter]
     public int CobroId { get; set; }
     public Cobros? cobro { get; set; } = new Cobros();
-    public CobroDetalle? cobroDetalle { get; set; } = new CobroDetalle();
+    public CobrosDetalle? cobrosDetalle { get; set; } = new CobrosDetalle();
     public List<Deudores> deudor { get; set; } = new List<Deudores>();
-    public List<CobroDetalle> ListacobroDetalle { get; set; } = new List<CobroDetalle>();
-    private List<CobroDetalle> detallesEliminados = new List<CobroDetalle>();
+    public List<CobrosDetalle> ListacobroDetalle { get; set; } = new List<CobrosDetalle>();
+    private List<CobrosDetalle> detallesEliminados = new List<CobrosDetalle>();
     private bool modoeditar = false;
     private bool Alerta;
     private bool eliminado;
@@ -193,12 +193,12 @@
     {
         if (!modoeditar && cobro.CobroId > 0)
         {
-            ListacobroDetalle.Add(new CobroDetalle
+            ListacobroDetalle.Add(new CobrosDetalle
                 {
-                    DetalleId = cobroDetalle.DetalleId,
+                    DetalleId = cobrosDetalle.DetalleId,
                     CobroId = cobro.CobroId,
-                    PrestamoId = cobroDetalle.PrestamoId,
-                    ValorCobrado = cobroDetalle.ValorCobrado
+                    PrestamoId = cobrosDetalle.PrestamoId,
+                    ValorCobrado = cobrosDetalle.ValorCobrado
                 });
         }
         else
@@ -206,7 +206,7 @@
             EditarDetalle();
         }
 
-        cobroDetalle = new CobroDetalle(); 
+        cobrosDetalle = new CobrosDetalle(); 
         modoeditar = false;
         Agregar = true;
 
@@ -214,15 +214,15 @@
 
     public async Task EditarDetalle()
     {
-        var detalleExistente = ListacobroDetalle.FirstOrDefault(d => d.DetalleId == cobroDetalle.DetalleId);
+        var detalleExistente = ListacobroDetalle.FirstOrDefault(d => d.DetalleId == cobrosDetalle.DetalleId);
         if (detalleExistente != null)
         {
-            detalleExistente.PrestamoId = cobroDetalle.PrestamoId;
-            detalleExistente.ValorCobrado = cobroDetalle.ValorCobrado;
+            detalleExistente.PrestamoId = cobrosDetalle.PrestamoId;
+            detalleExistente.ValorCobrado = cobrosDetalle.ValorCobrado;
         }
     }
 
-    public void EliminarDetalle(CobroDetalle detalle)
+    public void EliminarDetalle(CobrosDetalle detalle)
     {
         ListacobroDetalle.Remove(detalle);
         detallesEliminados.Add(detalle);
