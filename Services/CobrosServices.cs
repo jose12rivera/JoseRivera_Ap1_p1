@@ -65,7 +65,7 @@ public class CobrosServices
             .ExecuteDeleteAsync();
         return eliminado > 0;
     }
-    //El Metodo Buscar agregue los include Deudor y CobroDetalle
+    //El Metodo Buscar agregue los include Deudor y CobrosDetalle
     public async Task<Cobros?> Buscar(int id)
     {
         return await _contexto.Cobros
@@ -82,7 +82,7 @@ public class CobrosServices
         .OrderByDescending(p => p.PrestamoId) 
         .FirstOrDefaultAsync();
     }
-    //El Metodo en el listar de cobros el include deudor y CobroDetalles
+    //El Metodo en el listar de cobros el include deudor y CobrosDetalle
     public async Task<List<Cobros>> Listar(Expression<Func<Cobros, bool>> Criterio)
     {
         return await _contexto.Cobros
