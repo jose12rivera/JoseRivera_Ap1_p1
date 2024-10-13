@@ -15,5 +15,5 @@ public class Cobros
     public Deudores? Deudor { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el Deudor")]
     public decimal Monto { get; set; }
-    public ICollection<CobrosDetalle> CobroDetalles { get; set; } = new List<CobrosDetalle>();
+    public ICollection<CobrosDetalle> CobrosDetalle { get; set; } = new List<CobrosDetalle>();
 }
