@@ -85,9 +85,15 @@
                     </div>
                    @*  PrestamoId *@
                     <div class="col-md-3 mb-3">
-                        <label for="PrestamoId"><strong>PrestamoId:</strong></label>
-                        <InputNumber @bind-Value="cobrosDetalle.PrestamoId" class="form-control" />
-                        <ValidationMessage For="@(() => cobrosDetalle.PrestamoId)" />
+                        <label class="form-label"><strong>Préstamo Id</strong></label>
+
+                        <InputSelect class="form-control" @bind-Value="cobrosDetalle.PrestamoId">
+                            <option value="" selected disabled>Elija una opción</option>
+                            @foreach (var prestamo in ListaPrestamos)
+                            {
+                                <option value="@prestamo.PrestamoId">@prestamo.PrestamoId</option>
+                            }
+                        </InputSelect>
                     </div>
                     <div class="col-md-3 mb-3 d-flex align-items-end">
                         <button type="button" @onclick="AgregarDetalle" class="btn btn-outline-primary ">
@@ -169,6 +175,7 @@
     public CobrosDetalle cobrosDetalle { get; set; } = new CobrosDetalle();
     public List<CobrosDetalle> ListacobroDetalle { get; set; } = new List<CobrosDetalle>();
     public List<Deudores> deudor { get; set; } = new List<Deudores>();
+    public List<Prestamos> ListaPrestamos { get; set; } = new List<Prestamos>();
     private bool Alerta;
     private bool existe = false;
     private bool Agregar;
@@ -225,7 +232,7 @@
             var prestamo = await cobrosServices.ObtenerPrestamoPorDeudorId(selectedDeudorId);
             if (prestamo != null)
             {
-                cobro.Monto = prestamo.Monto ?? 0;
+                cobro.Monto = prestamo.Monto;
             }
         }
     }
