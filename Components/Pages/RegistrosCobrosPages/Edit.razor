@@ -86,8 +86,13 @@
                    @*  PrestamoId *@
                     <div class="col-md-3 mb-3">
                         <label for="PrestamoId"><strong>PrestamoId:</strong></label>
-                        <InputNumber @bind-Value="cobrosDetalle.PrestamoId" class="form-control" />
-                        <ValidationMessage For="@(() => cobrosDetalle.PrestamoId)" />
+                        <InputSelect class="form-control" @bind-Value="cobrosDetalle.PrestamoId">
+                            <option value="" selected disabled>Elija una opción</option>
+                            @foreach (var prestamo in ListaPrestamos)
+                            {
+                                <option value="@prestamo.PrestamoId">@prestamo.PrestamoId</option>
+                            }
+                        </InputSelect>
                     </div>
                     <div class="col-md-3 mb-3 d-flex align-items-end">
                         <button type="button" @onclick="AgregarDetalle" class="btn btn-outline-primary ">
@@ -170,6 +175,7 @@
     public List<Deudores> deudor { get; set; } = new List<Deudores>();
     public List<CobrosDetalle> ListacobroDetalle { get; set; } = new List<CobrosDetalle>();
     private List<CobrosDetalle> detallesEliminados = new List<CobrosDetalle>();
+    public List<Prestamos> ListaPrestamos { get; set; } = new List<Prestamos>();
     private bool modoeditar = false;
     private bool Alerta;
     private bool eliminado;
@@ -191,6 +197,29 @@
             ListacobroDetalle = cobro.CobrosDetalle.ToList();
         }
     }
+    //Nuevo
+    public async Task BuscarPrestamosPendientes()
+    {
+        ListaPrestamos = await prestamosServices
+            .GetPrestamosPendientes(cobro.DeudorId);
+    }
+    //Nuevo
+    private async Task HandlePrestamoSelected((Prestamos prestamo, double valor) selection)
+    {
+        var detalle = new CobrosDetalle
+            {
+                PrestamoId = selection.prestamo.PrestamoId
+                
+            };
+
+        cobro.CobrosDetalle.Add(detalle);
+        cobro.Monto = cobro.CobrosDetalle.Sum(d => d.ValorCobrado ?? 0);
+
+
+        cobrosDetalle = new CobrosDetalle();
+        await Task.CompletedTask;
+    }
+
 
     public async Task AgregarDetalle()
     {
