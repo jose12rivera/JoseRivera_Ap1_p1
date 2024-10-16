@@ -4,8 +4,7 @@
 @inject NavigationManager navigationManager
 @inject CobrosServices cobrosServices
 @inject PrestamosServices prestamosServices
-@using JoseRivera_Ap1_p1.DAL
-@using Microsoft.EntityFrameworkCore
+@inject DeudoresServices deudoresServices
 
 <EditForm Model="cobro" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -55,92 +54,84 @@
                     <InputNumber @bind-Value="cobro.Monto" class="form-control" />
                     <ValidationMessage For="@(() => cobro.Monto)" />
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="container">
-        <div class="card shadow-lg mt-3 border-success">
-            <div class="card-header ">
-                <h5 class="card-header ">Registro CobrosDetalle</h5>
-            </div>
-            <div class="card-body">
-                @if (Agregar)
-                {
-                    <div class="alert alert-info" role="alert">
-                        Se agregó el cobro.
-                    </div>
-                }
 
-                <div class="row">
-                   @*  DetalleId *@
-                    <div class="col-md-3 mb-3">
-                        <label for="DetalleId"><strong>DetalleId:</strong></label>
-                        <InputNumber @bind-Value="cobrosDetalle.DetalleId" class="form-control" />
-                    </div>
-                    @* CobroId *@
-                    <div class="col-md-3 mb-3">
-                        <label for="CobroId"><strong>CobroId:</strong></label>
-                        <InputNumber @bind-Value="cobrosDetalle.CobroId" class="form-control " />
-                    </div>
-                   @*  PrestamoId *@
-                    <div class="col-md-3 mb-3">
-                        <label for="PrestamoId"><strong>PrestamoId:</strong></label>
-                        <InputSelect class="form-control" @bind-Value="cobrosDetalle.PrestamoId">
-                            <option value="" selected disabled>Elija una opción</option>
-                            @foreach (var prestamo in ListaPrestamos)
-                            {
-                                <option value="@prestamo.PrestamoId">@prestamo.PrestamoId</option>
-                            }
-                        </InputSelect>
-                    </div>
-                    <div class="col-md-3 mb-3 d-flex align-items-end">
-                        <button type="button" @onclick="AgregarDetalle" class="btn btn-outline-primary ">
-                            <span class="bi bi-plus"></span>
-                            Agregar
-                        </button>
-                    </div>
-                  
-                </div>
 
-                <table class="table table-light table-bordered">
-                    <thead class="table table-striped text-center">
-                        <tr>
-                            <th>DetalleId</th>
-                            <th>CobroId</th>
-                            <th>PrestamoId</th>
-                            <th>ValorCobrado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var detalle in ListacobroDetalle)
+                <div class="card shadow-lg mt-3 border-success">
+
+                    <h5 class="card-header ">Registro CobrosDetalle</h5>
+
+                    <div class="card-body">
+                        @if (Agregar)
                         {
-                            <tr>
-                                <td>@detalle.DetalleId</td>
-                                <td>@detalle.CobroId</td>
-                                <td>@detalle.PrestamoId</td>
-                                <td>@detalle.ValorCobrado</td>
-                                <td class="text-center">
-                                    <button class="btn btn-outline-dark" @onclick="() => EliminarDetalle(detalle)">
-                                        <span class="bi bi-trash" style="color: black;"></span> Eliminar
-                                    </button>
-                                </td>
-                            </tr>
+                            <div class="alert alert-info" role="alert">
+                                Se agregó el cobro.
+                            </div>
                         }
-                    </tbody>
-                </table>
 
-                @* ValorCobrado *@
-                <div class="col-md-2 mb-5">
-                    <label><strong>ValorCobrado:</strong></label>
-                    <InputNumber @bind-Value="cobrosDetalle.ValorCobrado" class="form-control" />
-                    <ValidationMessage For="@(() => cobrosDetalle.ValorCobrado)" />
+
+                        <div class="row mb-3">
+                            @*  PrestamoId *@
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label"><strong>PrestamoId</strong></label>
+                                <InputSelect class="form-control" @bind-Value="selectedPrestamoId">
+                                    <option value="0" selected disabled>Elija una opción</option>
+                                    @foreach (var prestamo in ListaPrestamos)
+                                    {
+                                        <option value="@prestamo.PrestamoId">@prestamo.PrestamoId - @prestamo.Concepto - Monto: @prestamo.Monto</option>
+                                    }
+                                </InputSelect>
+                            </div>
+
+                            @*  ValorCobrado *@
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label"><strong>Valor Cobrado:</strong></label>
+                                <InputNumber @bind-Value="cobrosDetalle.ValorCobrado" class="form-control" />
+                                <ValidationMessage For="@(() => cobrosDetalle.ValorCobrado)" />
+                            </div>
+
+                            <div class="col-md-4 mb-3 d-flex align-items-end">
+                                <button type="button" @onclick="AgregarDetalle" class="btn btn-outline-primary">
+                                    <span class="bi bi-plus"></span>
+                                    Agregar
+                                </button>
+                            </div>
+                        </div>
+
+                        <table class="table table-light table-bordered">
+                            <thead class="table table-striped text-center">
+                                <tr>
+                                    <th>DetalleId</th>
+                                    <th>CobroId</th>
+                                    <th>PrestamoId</th>
+                                    <th>ValorCobrado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in ListacobroDetalle)
+                                {
+                                    <tr>
+                                        <td>@detalle.DetalleId</td>
+                                        <td>@detalle.CobroId</td>
+                                        <td>@detalle.PrestamoId</td>
+                                        <td>@detalle.ValorCobrado</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-outline-dark" @onclick="() => EliminarDetalle(detalle)">
+                                                <span class="bi bi-trash" style="color: black;"></span> Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
                 </div>
-
-                
             </div>
         </div>
     </div>
+
+
 
     @if (Alerta)
     {
@@ -176,109 +167,69 @@
     public List<CobrosDetalle> ListacobroDetalle { get; set; } = new List<CobrosDetalle>();
     private List<CobrosDetalle> detallesEliminados = new List<CobrosDetalle>();
     public List<Prestamos> ListaPrestamos { get; set; } = new List<Prestamos>();
+    private int selectedPrestamoId { get; set; }
     private bool modoeditar = false;
     private bool Alerta;
     private bool eliminado;
     private bool Agregar;
     private bool existe;
-    public async Task Nuevo()
-    {
-        cobro = new Cobros();
-        cobrosDetalle = new CobrosDetalle();
-        existe = false;
-    }
     protected override async Task OnInitializedAsync()
     {
-        deudor = await cobrosServices.ListarDeudore();
-        cobro = await cobrosServices.Buscar(CobroId) ?? new Cobros();
+        deudor = await cobrosServices.ObtenerDeudoresConPrestamos();
+        await CargarCobro();
+    }
 
-        if (CobroId != 0)
+    private async Task CargarCobro()
+    {
+        cobro = await cobrosServices.Buscar(CobroId);
+        if (cobro != null)
         {
+
             ListacobroDetalle = cobro.CobrosDetalle.ToList();
-        }
-    }
-    //Nuevo
-    public async Task BuscarPrestamosPendientes()
-    {
-        ListaPrestamos = await prestamosServices
-            .GetPrestamosPendientes(cobro.DeudorId);
-    }
-    //Nuevo
-    private async Task HandlePrestamoSelected((Prestamos prestamo, double valor) selection)
-    {
-        var detalle = new CobrosDetalle
-            {
-                PrestamoId = selection.prestamo.PrestamoId
-                
-            };
-
-        cobro.CobrosDetalle.Add(detalle);
-        cobro.Monto = cobro.CobrosDetalle.Sum(d => d.ValorCobrado ?? 0);
-
-
-        cobrosDetalle = new CobrosDetalle();
-        await Task.CompletedTask;
-    }
-
-
-    public async Task AgregarDetalle()
-    {
-        if (!modoeditar && cobro.CobroId > 0)
-        {
-            ListacobroDetalle.Add(new CobrosDetalle
-                {
-                    DetalleId = cobrosDetalle.DetalleId,
-                    CobroId = cobro.CobroId,
-                    PrestamoId = cobrosDetalle.PrestamoId,
-                    ValorCobrado = cobrosDetalle.ValorCobrado
-                });
-        }
-        else
-        {
-            EditarDetalle();
-        }
-
-        cobrosDetalle = new CobrosDetalle();
-        modoeditar = false;
-        Agregar = true;
-
-    }
-
-    public async Task EditarDetalle()
-    {
-        var detalleExistente = ListacobroDetalle.FirstOrDefault(d => d.DetalleId == cobrosDetalle.DetalleId);
-        if (detalleExistente != null)
-        {
-            detalleExistente.PrestamoId = cobrosDetalle.PrestamoId;
-            detalleExistente.ValorCobrado = cobrosDetalle.ValorCobrado;
+            ListaPrestamos = await prestamosServices.CargarPrestamosPorDeudorAsync(cobro.DeudorId);
         }
     }
 
-    public void EliminarDetalle(CobrosDetalle detalle)
+    public async Task Nuevo()
     {
-        ListacobroDetalle.Remove(detalle);
-        detallesEliminados.Add(detalle);
-        eliminado = true;
+        existe = false;
+        cobro = new Cobros();
     }
 
     private async Task Guardar()
     {
-
-        foreach (var detalleEliminado in detallesEliminados)
-        {
-            cobro.CobrosDetalle.Remove(detalleEliminado);
-        }
-
         cobro.CobrosDetalle = ListacobroDetalle;
-
         var guardado = await cobrosServices.Guardar(cobro);
         if (guardado)
         {
-            detallesEliminados.Clear();
             Alerta = true;
         }
     }
-    public async Task Volver()
+
+    public async Task EliminarDetalle(CobrosDetalle detalle)
+    {
+        ListacobroDetalle.Remove(detalle);
+    }
+
+    public async Task AgregarDetalle()
+    {
+        ListacobroDetalle.Add(new CobrosDetalle
+            {
+                DetalleId = cobrosDetalle.DetalleId,
+                CobroId = cobro.CobroId,
+                PrestamoId = selectedPrestamoId,
+                ValorCobrado = cobrosDetalle.ValorCobrado
+            });
+        cobrosDetalle = new CobrosDetalle();
+    }
+
+    private async Task OnDeudorSelected(ChangeEventArgs e)
+    {
+        int selectedDeudorId = Convert.ToInt32(e.Value);
+        cobro.DeudorId = selectedDeudorId;
+        ListaPrestamos = await cobrosServices.CargarPrestamosPorDeudorAsync(selectedDeudorId);
+    }
+    public void Volver()
     {
         navigationManager.NavigateTo("/Cobros/Index");
     }
