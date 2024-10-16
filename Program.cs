@@ -19,6 +19,8 @@ builder.Services.AddScoped<PrestamosServices>();
 //La inyeccion del services
 builder.Services.AddScoped<CobrosServices>();
 
+builder.Services.AddScoped<DeudoresServices>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
