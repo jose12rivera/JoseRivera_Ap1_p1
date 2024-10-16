@@ -30,6 +30,7 @@ public class PrestamosServices
     }
     public async Task<bool> Guardar(Prestamos prestamo)
     {
+        prestamo.Balance = prestamo.Monto;
         if(!await Existe(prestamo.PrestamoId)) 
             return await Insertar(prestamo);
         else
@@ -45,6 +46,7 @@ public class PrestamosServices
     public async Task<Prestamos?> Buscar(int id)
     {
         return await _contexto.Prestamos
+            .Include(d=>d.Deudor)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.PrestamoId == id);
     }
@@ -54,7 +56,30 @@ public class PrestamosServices
     {
         return await _contexto.Prestamos
            .AsNoTracking()
+           .Include(d=>d.Deudor)
            .Where(Criterio) 
            .ToListAsync();
+    }
+    public async Task<List<Deudores>> ListarDeudore()
+    {
+        return await _contexto.Deudores
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    //Nuevo
+    public async Task<List<Prestamos>> GetPrestamosPendientes(int deudorId)
+    {
+        return await _contexto.Prestamos
+            .Where(p => p.DeudorId == deudorId && p.Balance > 0)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+    //Nuevo
+    public async Task<Prestamos?> BuscarPrestamo(int id)
+    {
+        return await _contexto.Prestamos.
+            Include(p => p.Deudor)
+            .FirstOrDefaultAsync(p => p.DeudorId == id);
     }
 }

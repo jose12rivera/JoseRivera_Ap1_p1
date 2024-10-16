@@ -1,0 +1,160 @@
+﻿@page "/Cobros/Delete"
+@page "/Cobros/Delete/{CobroId:int}"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject CobrosServices cobrosServices
+@inject PrestamosServices prestamosServices
+@using JoseRivera_Ap1_p1.DAL
+@using Microsoft.EntityFrameworkCore
+
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header ">
+            <h5 class="card-header ">Eliminar del Cobro</h5>
+        </div>
+        <div class="container">
+
+            <div class="mb-3 row">
+                <label for="CobroId" class="col-md-2 text-end col-form-label"><strong>CobroId:</strong></label>
+                <div class="col-md-1">
+                    <p class="form-control-plaintext">@cobro?.CobroId</p>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="Fecha" class="col-md-2 text-end col-form-label"><strong>Fecha:</strong></label>
+                <div class="col-md-1">
+                    <p class="form-control-plaintext">@cobro?.Fecha?.ToString("dd/MM/yy")</p>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="Deudor" class="col-md-2 text-end col-form-label"><strong>Deudor:</strong></label>
+                <div class="col-md-1">
+                    <p class="form-control-plaintext"> @listadeudor?.FirstOrDefault(d => d.DeudorId == cobro?.DeudorId)?.Nombres</p>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="Monto" class="col-md-2 text-end col-form-label"><strong>Monto:</strong></label>
+                <div class="col-md-1">
+                    <p class="form-control-plaintext">@cobro?.Monto</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card shadow-lg mt-3 border-success">
+        <div class="card-header ">
+            <h5 class="card-header ">Eliminar CobrosDetalle</h5>
+        </div>
+        <div class="container">
+            <div class="card-body">
+
+                @foreach (var detalle in cobro.CobrosDetalle)
+                {
+                    <div class="mb-3 row">
+                        <label class="col-md-2 text-end col-form-label"><strong>DetalleId:</strong></label>
+                        <div class="col-md-1">
+                            <p class="form-control-plaintext">@detalle.DetalleId</p>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-md-2 text-end col-form-label"><strong>CobroId:</strong></label>
+                        <div class="col-md-1">
+                            <p class="form-control-plaintext">@detalle.CobroId</p>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-md-2 text-end col-form-label"><strong>PrestamoId:</strong></label>
+                        <div class="col-md-1">
+                            <p class="form-control-plaintext">@detalle.PrestamoId</p>
+                        </div>
+                    </div>
+                   
+                    <hr />
+                }
+
+                <table class="table table-light table-bordered">
+                    <thead class="table table-striped text-center">
+                        <tr>
+                            <th>DetalleId</th>
+                            <th>CobroId</th>
+                            <th>PrestamoId</th>
+                            <th>ValorCobrado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detalle in cobro.CobrosDetalle)
+                        {
+                            <tr>
+                                <td>@detalle.DetalleId</td>
+                                <td>@detalle.CobroId</td>
+                                <td>@detalle.PrestamoId</td>
+                                <td>@detalle.ValorCobrado</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @*ValorCobrado  *@
+                <div class="mb-3 row">
+                    <label class="col-md-2 text-end col-form-label"><strong>ValorCobrado:</strong></label>
+                    <div class="col-md-1">
+                        <p class="form-control-plaintext">@cobro.CobrosDetalle.Sum(d => d.ValorCobrado)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (eliminado)
+    {
+        <div class="alert alert-danger" role="alert">
+             eliminado el registro con todos y detalles correctamente.
+        </div>
+    }
+    <div class="card-footer">
+        <button type="button" @onclick="EliminarCobro" class="btn btn-outline-danger">
+            <span class="bi bi-trash mt-3"></span>
+            Eliminar
+        </button>
+        <button type="button" @onclick="Volver" class="btn btn-outline-primary">
+            <span class="bi bi-arrow-left mt-3"></span>
+            Volver
+        </button>
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public int CobroId { get; set; }
+    public Cobros? cobro { get; set; } = new Cobros();
+    public List<Deudores> listadeudor { get; set; } = new List<Deudores>();
+    private bool eliminado;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cobro = await cobrosServices.Buscar(CobroId);
+        listadeudor = await cobrosServices.ListarDeudore();
+    }
+    public async Task EliminarCobro()
+    {
+        if (CobroId == 0 || cobro == null)
+        {
+            return;
+        }
+
+        if (await cobrosServices.Eliminar(CobroId))
+        {
+            eliminado = true;
+        }
+    }
+    public async Task Volver()
+    {
+        navigationManager.NavigateTo("/Cobros/Index");
+    }
+}

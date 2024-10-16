@@ -1,9 +1,11 @@
-﻿@page "/Prestamos/Delete"
-@page "/Prestamos/Delete/{PrestamoId:int}"
+﻿@page "/Prestamos/Details"
+@page "/Prestamos/Details/{PrestamoId:int}"
 @rendermode InteractiveServer
 @inject NavigationManager navigationManager
 @inject PrestamosServices prestamosServices
 
+@if (prestamo != null)
+{
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header text-center">
@@ -27,31 +29,24 @@
         </div>
 
         <div class="card-footer">
-            <button type="button" @onclick="EliminarPrestamo" class="btn btn-outline-danger">
-                <span class="bi bi-trash mt-3"></span>
-               Eliminar
-            </button>
+           
             <button type="button" @onclick="Volver" class="btn btn-outline-primary">
                 <span class="bi bi-arrow-left mt-3"></span>
                 Volver
             </button>
         </div>
     </div>
-
-    @if (Alerta)
-    {
-
-        <div class="alert alert-danger" role="alert">
-            se elimino el prestamos.
-        </div>
-    }
+}
+else
+{
+    <p>No encontrado.</p>
+}
 
 @code {
     [Parameter]
     public int PrestamoId { get; set; }
     public Prestamos? prestamo { get; set; } = new Prestamos();
-    private bool existe = false;
-    private bool Alerta;
+
     protected override async Task OnInitializedAsync()
     {
         if (PrestamoId != 0)
@@ -59,17 +54,7 @@
             prestamo = await prestamosServices.Buscar(PrestamoId);
         }
     }
-    public  async Task EliminarPrestamo()
-    {
-        if(PrestamoId ==0 || prestamo == null)
-        {
-            return;
-        }
-        if(await prestamosServices.Eliminar(PrestamoId))
-        {
-            Alerta = true;
-        }
-    }
+   
     public async Task Volver()
     {
         navigationManager.NavigateTo("/Prestamo/Index");
