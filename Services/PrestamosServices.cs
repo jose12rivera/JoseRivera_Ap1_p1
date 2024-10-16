@@ -67,19 +67,8 @@ public class PrestamosServices
             .ToListAsync();
     }
 
-    //Nuevo
-    public async Task<List<Prestamos>> GetPrestamosPendientes(int deudorId)
+    public async Task<List<Prestamos>> CargarPrestamosPorDeudorAsync(int deudorId)
     {
-        return await _contexto.Prestamos
-            .Where(p => p.DeudorId == deudorId && p.Balance > 0)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-    //Nuevo
-    public async Task<Prestamos?> BuscarPrestamo(int id)
-    {
-        return await _contexto.Prestamos.
-            Include(p => p.Deudor)
-            .FirstOrDefaultAsync(p => p.DeudorId == id);
+        return await _contexto.Prestamos.Where(p => p.DeudorId == deudorId).ToListAsync();
     }
 }
