@@ -4,8 +4,7 @@
 @inject NavigationManager navigationManager
 @inject CobrosServices cobrosServices
 @inject PrestamosServices prestamosServices
-@using JoseRivera_Ap1_p1.DAL
-@using Microsoft.EntityFrameworkCore
+@inject DeudoresServices deudoresServices
 
 
 <div class="container">
@@ -25,7 +24,7 @@
             <div class="mb-3 row">
                 <label for="Fecha" class="col-md-2 text-end col-form-label"><strong>Fecha:</strong></label>
                 <div class="col-md-1">
-                    <p class="form-control-plaintext">@cobro?.Fecha?.ToString("dd/MM/yy")</p>
+                    <p class="form-control-plaintext">@cobro?.Fecha.ToString("dd/MM/yy")</p>
                 </div>
             </div>
 
@@ -43,37 +42,30 @@
                 </div>
             </div>
 
-        </div>
-    </div>
+            <div class="card shadow-lg mt-3 border-success">
 
-    <div class="card shadow-lg mt-3 border-success">
-        <div class="card-header ">
-            <h5 class="card-header ">Eliminar CobrosDetalle</h5>
-        </div>
-        <div class="container">
-            <div class="card-body">
+                <h5 class="card-header ">Eliminar CobrosDetalle</h5>
 
                 @foreach (var detalle in cobro.CobrosDetalle)
                 {
-                    <div class="mb-3 row">
-                        <label class="col-md-2 text-end col-form-label"><strong>DetalleId:</strong></label>
-                        <div class="col-md-1">
-                            <p class="form-control-plaintext">@detalle.DetalleId</p>
+                    <div class="row mb-3">
+                        <!-- PrestamoId -->
+                        <div class="col-md-6 d-flex align-items-center">
+                            <label class="col-md-4 text-end col-form-label"><strong>PrestamoId:</strong></label>
+                            <div class="col-md-8">
+                                <p class="form-control-plaintext">@detalle.PrestamoId</p>
+                            </div>
+                        </div>
+
+                        <!-- ValorCobrado -->
+                        <div class="col-md-6 d-flex align-items-center">
+                            <label class="col-md-4 text-end col-form-label"><strong>Valor Cobrado:</strong></label>
+                            <div class="col-md-8">
+                                <p class="form-control-plaintext">@cobro.CobrosDetalle.Sum(d => d.ValorCobrado)</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <label class="col-md-2 text-end col-form-label"><strong>CobroId:</strong></label>
-                        <div class="col-md-1">
-                            <p class="form-control-plaintext">@detalle.CobroId</p>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label class="col-md-2 text-end col-form-label"><strong>PrestamoId:</strong></label>
-                        <div class="col-md-1">
-                            <p class="form-control-plaintext">@detalle.PrestamoId</p>
-                        </div>
-                    </div>
-                   
+
                     <hr />
                 }
 
@@ -99,21 +91,16 @@
                     </tbody>
                 </table>
 
-                @*ValorCobrado  *@
-                <div class="mb-3 row">
-                    <label class="col-md-2 text-end col-form-label"><strong>ValorCobrado:</strong></label>
-                    <div class="col-md-1">
-                        <p class="form-control-plaintext">@cobro.CobrosDetalle.Sum(d => d.ValorCobrado)</p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
+
+
     @if (eliminado)
     {
         <div class="alert alert-danger" role="alert">
-             eliminado el registro con todos y detalles correctamente.
+            eliminado el registro con todos y detalles correctamente.
         </div>
     }
     <div class="card-footer">
