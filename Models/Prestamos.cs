@@ -10,7 +10,7 @@ public class Prestamos
     [Range(1, int.MaxValue, ErrorMessage = "Puede seleccionar un deudor válido.")]
     public int DeudorId { get; set; }
     [ForeignKey("DeudorId")]
-    public Deudores? Deudor { get; set; }
+    public virtual Deudores Deudor { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el Concepto")]
     public string? Concepto  { get; set; }
     [Required(ErrorMessage = "Intentar Nuevamente el Monto")]
