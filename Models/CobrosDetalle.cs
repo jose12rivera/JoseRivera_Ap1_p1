@@ -9,11 +9,9 @@ public class CobrosDetalle
     public int DetalleId { get; set; }
     public int CobroId { get; set; }
     [ForeignKey("CobroId")]
-    public Cobros cobros { get; set; }
-    [Required(ErrorMessage = "Intentar Nuevamente el PrestamoId")]
+    [InverseProperty("CobrosDetalle")]
+    public virtual Cobros cobros { get; set; } = null;
+  
     public int PrestamoId { get; set; }
-    [ForeignKey("PrestamoId")]
-    public Prestamos Prestamos { get; set; }
-    [Required(ErrorMessage = "Intentar Nuevamente el valorCobrado")]
     public decimal? ValorCobrado { get; set; }
 }
