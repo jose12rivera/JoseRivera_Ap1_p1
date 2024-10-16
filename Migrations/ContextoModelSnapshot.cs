@@ -129,8 +129,7 @@ namespace JoseRivera_Ap1_p1.Migrations
                     b.Property<int>("DeudorId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal?>("Monto")
-                        .IsRequired()
+                    b.Property<decimal>("Monto")
                         .HasColumnType("TEXT");
 
                     b.HasKey("PrestamoId");
@@ -143,7 +142,7 @@ namespace JoseRivera_Ap1_p1.Migrations
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
                 {
                     b.HasOne("JoseRivera_Ap1_p1.Models.Deudores", "Deudor")
-                        .WithMany()
+                        .WithMany("Cobros")
                         .HasForeignKey("DeudorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -180,7 +179,7 @@ namespace JoseRivera_Ap1_p1.Migrations
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Prestamos", b =>
                 {
                     b.HasOne("JoseRivera_Ap1_p1.Models.Deudores", "Deudor")
-                        .WithMany()
+                        .WithMany("Prestamos")
                         .HasForeignKey("DeudorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -191,6 +190,13 @@ namespace JoseRivera_Ap1_p1.Migrations
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Cobros", b =>
                 {
                     b.Navigation("CobrosDetalle");
+                });
+
+            modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Deudores", b =>
+                {
+                    b.Navigation("Cobros");
+
+                    b.Navigation("Prestamos");
                 });
 
             modelBuilder.Entity("JoseRivera_Ap1_p1.Models.Prestamos", b =>
