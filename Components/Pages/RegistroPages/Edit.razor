@@ -3,8 +3,7 @@
 @rendermode InteractiveServer
 @inject NavigationManager navigationManager
 @inject PrestamosServices prestamosServices
-@using JoseRivera_Ap1_p1.DAL
-@using Microsoft.EntityFrameworkCore
+@inject DeudoresServices deudoresServices
 
 <EditForm Model="prestamo" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
