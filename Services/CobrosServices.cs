@@ -30,28 +30,8 @@ public class CobrosServices
     // Método para modificar un Cobro existente
     public async Task<bool> Modificar(Cobros cobro)
     {
-        var cobroExistente = await _contexto.Cobros
-            .Include(c => c.CobrosDetalle)
-            .FirstOrDefaultAsync(c => c.CobroId == cobro.CobroId);
-
-        if (cobroExistente != null)
-        {
-            // Eliminar detalles que ya no están presentes
-            foreach (var detalleExistente in cobroExistente.CobrosDetalle.ToList())
-            {
-                if (!cobro.CobrosDetalle.Any(d => d.DetalleId == detalleExistente.DetalleId))
-                {
-                    _contexto.CobrosDetalle.Remove(detalleExistente);
-                }
-            }
-
-            // Actualizar detalles existentes
-            cobroExistente.CobrosDetalle = cobro.CobrosDetalle;
-            _contexto.Entry(cobroExistente).CurrentValues.SetValues(cobro);
-            return await _contexto.SaveChangesAsync() > 0;
-        }
-
-        return false;
+        _contexto.Cobros.Update(cobro);
+       return await _contexto.SaveChangesAsync() > 0; 
     }
 
     public async Task<bool> Guardar(Cobros cobro)
